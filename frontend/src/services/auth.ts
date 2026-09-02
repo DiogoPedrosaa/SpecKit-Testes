@@ -13,21 +13,27 @@ export interface AuthResponse {
 
 export const authService = {
   async register(username: string, passwordHash: string): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/register', { username, password: passwordHash });
-    return response.data;
+    const response = await api.post<any>('/auth/register', { name: username, email: username, password: passwordHash });
+    return {
+      user: { id: response.data.user.id, username: response.data.user.name, balance: response.data.user.freeBalance },
+      token: response.data.token
+    };
   },
 
   async login(username: string, passwordHash: string): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/login', { username, password: passwordHash });
-    return response.data;
+    const response = await api.post<any>('/auth/login', { email: username, password: passwordHash });
+    return {
+      user: { id: response.data.user.id, username: response.data.user.name, balance: response.data.user.freeBalance },
+      token: response.data.token
+    };
   },
 
   async addBalance(amount: number): Promise<void> {
-    await api.post('/users/balance', { amount });
+    await api.post('/account/add-balance', { amount });
   },
   
   async getMe(): Promise<User> {
-    const response = await api.get<User>('/users/me');
-    return response.data;
+    const response = await api.get<any>('/users/me');
+    return { id: response.data.id, username: response.data.name, balance: response.data.freeBalance };
   }
 };

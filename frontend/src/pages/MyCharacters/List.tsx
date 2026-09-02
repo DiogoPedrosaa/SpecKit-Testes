@@ -22,39 +22,52 @@ export const CharacterList: React.FC = () => {
     fetchMyCharacters();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>My Characters</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="tibia-container">
+      <div className="tibia-header">
+        <h1>My Characters</h1>
+      </div>
       
-      <div style={{ marginBottom: '20px' }}>
-        <Link to="/my-characters/new">
-          <button>Add New Character</button>
-        </Link>
-        <Link to="/dashboard" style={{ marginLeft: '10px' }}>
-          Back to Dashboard
+      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+      {loading && <div>Loading...</div>}
+
+      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+        <Link to="/my-characters/new" className="tibia-button" style={{ marginRight: '10px' }}>
+          Add New Character
         </Link>
       </div>
 
-      <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
-        {characters.map(char => (
-          <div key={char.id} style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px' }}>
-            <h2>{char.name}</h2>
-            <p><strong>Level:</strong> {char.level}</p>
-            <p><strong>Vocation:</strong> {char.vocation}</p>
-            <p><strong>Gender:</strong> {char.gender}</p>
-            <p><strong>World:</strong> {char.world}</p>
-            <div style={{ marginTop: '10px' }}>
-              <Link to={`/my-characters/${char.id}/auction`}>
-                <button>Create Auction</button>
-              </Link>
+      {!loading && !error && (
+        <div style={{ display: 'grid', gap: '15px', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+          {characters.map(char => (
+            <div key={char.id} className="tibia-box">
+              <h2>{char.name}</h2>
+              <div style={{ backgroundColor: '#fff', border: '1px solid var(--tibia-border-dark)', padding: '5px', marginBottom: '10px', fontSize: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span><strong>Level:</strong> {char.level}</span>
+                  <span><strong>Vocation:</strong> {char.vocation}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
+                  <span><strong>Gender:</strong> {char.gender}</span>
+                  <span><strong>World:</strong> {char.world}</span>
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <Link to={`/my-characters/${char.id}/auction`} className="tibia-button">
+                  Create Auction
+                </Link>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+      )}
+      {!loading && !error && characters.length === 0 && (
+        <p style={{ textAlign: 'center' }}>You have no characters yet.</p>
+      )}
+
+      <div className="tibia-nav">
+        <Link to="/dashboard" className="tibia-button">Back to Dashboard</Link>
       </div>
-      {characters.length === 0 && <p>You have no characters yet.</p>}
     </div>
   );
 };

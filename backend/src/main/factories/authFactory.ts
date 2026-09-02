@@ -15,5 +15,5 @@ export function makeAuthController() {
   const loginUseCase = new LoginUserUseCase(userRepository, hasher, tokenPort);
   const addBalanceUseCase = new AddBalanceUseCase(userRepository);
 
-  return authController(registerUseCase, loginUseCase, addBalanceUseCase);
+  return authController(registerUseCase, loginUseCase, addBalanceUseCase, userRepository, tokenPort);
 }

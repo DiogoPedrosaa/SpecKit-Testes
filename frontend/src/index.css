@@ -1,111 +1,140 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  --tibia-bg: #051122; /* Dark background similar to tibia.com */
+  --tibia-parchment: #e4d4b1; /* Parchment background for boxes */
+  --tibia-parchment-light: #f1e0c6;
+  --tibia-border-dark: #3a1901; /* Dark brown borders */
+  --tibia-text-dark: #3a1901;
+  --tibia-text-light: #f1e0c6;
+  --tibia-button-start: #f5d38a;
+  --tibia-button-end: #c49947;
+  --tibia-button-border: #5a2800;
+  
+  --sans: 'Verdana', 'Tahoma', 'Arial', sans-serif;
+  --heading: 'Georgia', 'Times New Roman', serif;
 }
 
 body {
   margin: 0;
+  padding: 0;
+  background-color: var(--tibia-bg);
+  background-image: linear-gradient(rgba(5, 17, 34, 0.9), rgba(5, 17, 34, 0.9)); /* Pseudo texture */
+  font-family: var(--sans);
+  color: var(--tibia-text-light);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
-h1,
-h2 {
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3 {
   font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+  margin-top: 0;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
+/* Global Container */
+.tibia-container {
+  width: 900px;
+  max-width: 100%;
+  margin: 20px auto;
+  background-color: var(--tibia-parchment);
+  color: var(--tibia-text-dark);
+  border: 4px solid var(--tibia-border-dark);
   border-radius: 4px;
-  color: var(--text-h);
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.8);
+  box-sizing: border-box;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* Header */
+.tibia-header {
+  text-align: center;
+  border-bottom: 2px solid var(--tibia-border-dark);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.tibia-header h1 {
+  color: var(--tibia-text-dark);
+  font-size: 28px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Boxes (Auctions) */
+.tibia-box {
+  background-color: var(--tibia-parchment-light);
+  border: 1px solid var(--tibia-border-dark);
+  padding: 10px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.tibia-box h2 {
+  font-size: 18px;
+  border-bottom: 1px solid var(--tibia-border-dark);
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.tibia-button {
+  background: linear-gradient(to bottom, var(--tibia-button-start), var(--tibia-button-end));
+  border: 1px solid var(--tibia-button-border);
+  color: var(--tibia-text-dark);
+  font-family: var(--sans);
+  font-weight: bold;
+  padding: 5px 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 12px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.tibia-button:hover {
+  background: linear-gradient(to bottom, var(--tibia-button-end), var(--tibia-button-start));
+}
+
+.tibia-button:disabled {
+  background: #ccc;
+  color: #666;
+  border-color: #999;
+  cursor: not-allowed;
+}
+
+/* Inputs */
+.tibia-input {
+  background-color: #fff;
+  border: 1px solid var(--tibia-border-dark);
+  padding: 4px;
+  color: #000;
+  font-family: var(--sans);
+}
+
+/* Links */
+a.tibia-link {
+  color: var(--tibia-text-dark);
+  text-decoration: underline;
+  font-weight: bold;
+}
+a.tibia-link:hover {
+  text-decoration: none;
+}
+
+/* Footer Navigation */
+.tibia-nav {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid var(--tibia-border-dark);
+}
+
+.tibia-nav a {
+  margin: 0 10px;
 }

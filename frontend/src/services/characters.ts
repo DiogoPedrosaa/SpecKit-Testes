@@ -27,7 +27,7 @@ export const characterService = {
   },
 
   getMyCharacters: async () => {
-    const response = await api.get<Character[]>('/characters/my');
+    const response = await api.get<Character[]>('/characters/me');
     return response.data;
   },
 

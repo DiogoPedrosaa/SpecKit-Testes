@@ -29,43 +29,50 @@ export const History: React.FC = () => {
     fetchHistory();
   }, []);
 
-  if (loading) return <div>Loading history...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   return (
-    <div>
-      <h2>My History</h2>
-      <Link to="/dashboard">Back to Dashboard</Link>
+    <div className="tibia-container">
+      <div className="tibia-header">
+        <h1>My History</h1>
+      </div>
       
-      {history.length === 0 ? (
-        <p>No history found.</p>
-      ) : (
-        <table border={1} cellPadding={10} style={{ marginTop: '20px', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Character</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history.map((item) => (
-              <tr key={item.id}>
-                <td>{new Date(item.date).toLocaleString()}</td>
-                <td>
-                  {item.type === 'bid_won' && 'Bid Won'}
-                  {item.type === 'bid_lost' && 'Bid Lost'}
-                  {item.type === 'character_sold' && 'Character Sold'}
-                  {item.type !== 'bid_won' && item.type !== 'bid_lost' && item.type !== 'character_sold' && item.type}
-                </td>
-                <td>{item.characterName}</td>
-                <td>{item.amount}</td>
+      {loading && <div>Loading history...</div>}
+      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
+
+      {!loading && !error && history.length === 0 ? (
+        <p style={{ textAlign: 'center' }}>No history found.</p>
+      ) : (!loading && !error && (
+        <div className="tibia-box">
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid var(--tibia-border-dark)', backgroundColor: '#d4c0a1' }}>
+                <th style={{ padding: '8px' }}>Date</th>
+                <th style={{ padding: '8px' }}>Type</th>
+                <th style={{ padding: '8px' }}>Character</th>
+                <th style={{ padding: '8px' }}>Amount (TC)</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {history.map((item, index) => (
+                <tr key={item.id} style={{ backgroundColor: index % 2 === 0 ? '#f1e0c6' : '#e4d4b1', borderBottom: '1px solid var(--tibia-border-dark)' }}>
+                  <td style={{ padding: '8px' }}>{new Date(item.date).toLocaleString()}</td>
+                  <td style={{ padding: '8px', fontWeight: 'bold' }}>
+                    {item.type === 'bid_won' && <span style={{ color: 'green' }}>Bid Won</span>}
+                    {item.type === 'bid_lost' && <span style={{ color: 'red' }}>Bid Lost</span>}
+                    {item.type === 'character_sold' && <span style={{ color: 'blue' }}>Character Sold</span>}
+                    {item.type !== 'bid_won' && item.type !== 'bid_lost' && item.type !== 'character_sold' && item.type}
+                  </td>
+                  <td style={{ padding: '8px' }}>{item.characterName}</td>
+                  <td style={{ padding: '8px', fontWeight: 'bold' }}>{item.amount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+
+      <div className="tibia-nav">
+        <Link to="/dashboard" className="tibia-button">Back to Dashboard</Link>
+      </div>
     </div>
   );
 };

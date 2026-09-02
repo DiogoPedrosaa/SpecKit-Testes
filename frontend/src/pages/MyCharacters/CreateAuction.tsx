@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { auctionService } from '../../services/auctions';
 
 export const CreateAuction: React.FC = () => {
@@ -32,38 +32,53 @@ export const CreateAuction: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Create Auction</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="tibia-container" style={{ width: '500px' }}>
+      <div className="tibia-header">
+        <h1>Create Auction</h1>
+      </div>
       
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', gap: '10px' }}>
-        <div>
-          <label>Start Price:</label>
-          <input
-            type="number"
-            value={startPrice}
-            onChange={(e) => setStartPrice(e.target.value)}
-            required
-            min="0"
-          />
-        </div>
-        <div>
-          <label>End Time:</label>
-          <input
-            type="datetime-local"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            required
-          />
-        </div>
-        
-        <button type="submit" disabled={loading}>
-          {loading ? 'Creating...' : 'Create Auction'}
-        </button>
-        <button type="button" onClick={() => navigate('/my-characters')}>
-          Cancel
-        </button>
-      </form>
+      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+      
+      <div className="tibia-box">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div>
+            <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Start Price (Tibia Coins):</label>
+            <input
+              className="tibia-input"
+              type="number"
+              value={startPrice}
+              onChange={(e) => setStartPrice(e.target.value)}
+              required
+              min="0"
+              style={{ width: '100%', boxSizing: 'border-box' }}
+            />
+          </div>
+          <div>
+            <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>End Time:</label>
+            <input
+              className="tibia-input"
+              type="datetime-local"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              required
+              style={{ width: '100%', boxSizing: 'border-box' }}
+            />
+          </div>
+          
+          <div style={{ textAlign: 'center', marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            <button type="submit" className="tibia-button" disabled={loading}>
+              {loading ? 'Creating...' : 'Submit Auction'}
+            </button>
+            <button type="button" className="tibia-button" onClick={() => navigate('/my-characters')}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="tibia-nav">
+        <Link to="/my-characters" className="tibia-button">Back to My Characters</Link>
+      </div>
     </div>
   );
 };

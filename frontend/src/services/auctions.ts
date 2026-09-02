@@ -35,7 +35,7 @@ export const auctionService = {
   },
 
   getHistory: async (): Promise<any> => {
-    const response = await api.get('/history');
+    const response = await api.get('/auctions/history');
     return response.data;
   }
 };

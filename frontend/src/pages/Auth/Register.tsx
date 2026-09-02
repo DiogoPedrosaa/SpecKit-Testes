@@ -21,33 +21,46 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Register for Tibia Bazaar</h2>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username</label>
-          <input 
-            type="text" 
-            value={username} 
-            onChange={e => setUsername(e.target.value)} 
-            required 
-          />
-        </div>
-        <div>
-          <label>Password</label>
-          <input 
-            type="password" 
-            value={password} 
-            onChange={e => setPassword(e.target.value)} 
-            required 
-          />
-        </div>
-        <button type="submit">Register</button>
-      </form>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+    <div className="tibia-container" style={{ width: '400px' }}>
+      <div className="tibia-header">
+        <h1>Register</h1>
+      </div>
+      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+      
+      <div className="tibia-box">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div>
+            <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Username</label>
+            <input 
+              className="tibia-input"
+              style={{ width: '100%', boxSizing: 'border-box' }}
+              type="text" 
+              value={username} 
+              onChange={e => setUsername(e.target.value)} 
+              required 
+            />
+          </div>
+          <div>
+            <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Password</label>
+            <input 
+              className="tibia-input"
+              style={{ width: '100%', boxSizing: 'border-box' }}
+              type="password" 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
+              required 
+            />
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '10px' }}>
+            <button type="submit" className="tibia-button">Register</button>
+          </div>
+        </form>
+      </div>
+
+      <div className="tibia-nav">
+        <p>Already have an account? <Link to="/login" className="tibia-link">Login here</Link></p>
+        <Link to="/" className="tibia-link">Back to Home</Link>
+      </div>
     </div>
   );
 };

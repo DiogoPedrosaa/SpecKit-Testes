@@ -28,39 +28,54 @@ const AuctionItem: React.FC<{ auction: Auction; onBidSuccess: () => void }> = ({
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px' }}>
+    <div className="tibia-box">
       {auction.character ? (
         <>
           <h2>{auction.character.name}</h2>
-          <p><strong>Level:</strong> {auction.character.level}</p>
-          <p><strong>Vocation:</strong> {auction.character.vocation}</p>
-          <p><strong>World:</strong> {auction.character.world}</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '10px' }}>
+            <span><strong>Level:</strong> {auction.character.level}</span>
+            <span><strong>Vocation:</strong> {auction.character.vocation}</span>
+            <span><strong>World:</strong> {auction.character.world}</span>
+          </div>
         </>
       ) : (
         <h2>Character: {auction.characterId}</h2>
       )}
-      <hr />
-      <p><strong>Start Price:</strong> {auction.startPrice}</p>
-      <p><strong>Current Bid:</strong> {auction.currentBid}</p>
-      <p><strong>Ends at:</strong> {new Date(auction.endTime).toLocaleString()}</p>
-      <hr />
+      
+      <div style={{ backgroundColor: '#fff', border: '1px solid var(--tibia-border-dark)', padding: '5px', marginBottom: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span><strong>Start Price:</strong></span>
+          <span style={{ color: 'green', fontWeight: 'bold' }}>{auction.startPrice} TC</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span><strong>Current Bid:</strong></span>
+          <span style={{ color: 'green', fontWeight: 'bold' }}>{auction.currentBid} TC</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span><strong>Ends at:</strong></span>
+          <span>{new Date(auction.endTime).toLocaleString()}</span>
+        </div>
+      </div>
+
       {auction.status === 'active' && (
-        <form onSubmit={handleBid}>
-          <div style={{ marginBottom: '10px' }}>
-            <label>Bid Amount: </label>
+        <form onSubmit={handleBid} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <label style={{ fontWeight: 'bold' }}>Your Bid: </label>
             <input 
+              className="tibia-input"
               type="number" 
               value={bidAmount} 
               onChange={(e) => setBidAmount(e.target.value === '' ? '' : Number(e.target.value))} 
               min={auction.currentBid > 0 ? auction.currentBid + 1 : auction.startPrice} 
               required
+              style={{ width: '80px' }}
             />
           </div>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Placing bid...' : 'Place Bid'}
+          <button type="submit" className="tibia-button" disabled={loading} style={{ alignSelf: 'flex-end' }}>
+            {loading ? 'Submitting...' : 'Submit Bid'}
           </button>
-          {message && <div style={{ color: 'green', marginTop: '10px' }}>{message}</div>}
-          {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+          {message && <div style={{ color: 'green', fontSize: '12px', textAlign: 'right' }}>{message}</div>}
+          {error && <div style={{ color: 'red', fontSize: '12px', textAlign: 'right' }}>{error}</div>}
         </form>
       )}
     </div>
@@ -87,23 +102,31 @@ export const Home: React.FC = () => {
     fetchAuctions();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Tibia Bazaar Clone</h1>
-      <p>Welcome to Tibia Bazaar Clone. Here are the active auctions:</p>
-      
-      <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
-        {auctions.map(auction => (
-          <AuctionItem key={auction.id} auction={auction} onBidSuccess={fetchAuctions} />
-        ))}
+    <div className="tibia-container">
+      <div className="tibia-header">
+        <h1>Char Bazaar</h1>
+        <p>Welcome to the Character Trade. Here you can buy and sell Tibia characters.</p>
       </div>
-      {auctions.length === 0 && <p>No active auctions found.</p>}
+      
+      {loading && <div>Loading auctions...</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
 
-      <div style={{ marginTop: '20px' }}>
-        <Link to="/login">Login</Link> | <Link to="/register">Register</Link> | <Link to="/dashboard">Dashboard</Link>
+      {!loading && !error && (
+        <>
+          <div style={{ display: 'grid', gap: '15px', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+            {auctions.map(auction => (
+              <AuctionItem key={auction.id} auction={auction} onBidSuccess={fetchAuctions} />
+            ))}
+          </div>
+          {auctions.length === 0 && <p style={{ textAlign: 'center', marginTop: '20px' }}>No active auctions found.</p>}
+        </>
+      )}
+
+      <div className="tibia-nav">
+        <Link to="/login" className="tibia-button">Login</Link>
+        <Link to="/register" className="tibia-button">Register</Link>
+        <Link to="/dashboard" className="tibia-button">Dashboard</Link>
       </div>
     </div>
   );

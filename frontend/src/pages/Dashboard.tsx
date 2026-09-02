@@ -24,28 +24,45 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <p>Welcome, {user.username}!</p>
-      <p>Current Balance: {user.balance}</p>
-      
-      <form onSubmit={handleAddBalance}>
-        <input 
-          type="number" 
-          value={amount} 
-          onChange={e => setAmount(e.target.value)} 
-          placeholder="Amount"
-        />
-        <button type="submit">Add Balance</button>
-      </form>
-
-      <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-        <Link to="/my-characters">My Characters</Link>
-        <Link to="/">Home (All Characters)</Link>
-        <Link to="/history">My History</Link>
+    <div className="tibia-container">
+      <div className="tibia-header">
+        <h1>Account Management</h1>
+        <p>Welcome to your account page, {user.username}.</p>
       </div>
 
-      <button onClick={handleLogout} style={{ marginTop: '20px' }}>Logout</button>
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <div className="tibia-box" style={{ flex: 1 }}>
+          <h2>Account Balance</h2>
+          <p style={{ fontSize: '16px', margin: '15px 0' }}>
+            Current Balance: <strong style={{ color: 'green' }}>{user.balance} TC</strong>
+          </p>
+          
+          <form onSubmit={handleAddBalance} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <input 
+              className="tibia-input"
+              type="number" 
+              value={amount} 
+              onChange={e => setAmount(e.target.value)} 
+              placeholder="Amount in TC"
+              style={{ width: '100px' }}
+            />
+            <button type="submit" className="tibia-button">Buy Tibia Coins</button>
+          </form>
+        </div>
+
+        <div className="tibia-box" style={{ flex: 1 }}>
+          <h2>Quick Actions</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Link to="/my-characters" className="tibia-button" style={{ textAlign: 'center' }}>My Characters</Link>
+            <Link to="/history" className="tibia-button" style={{ textAlign: 'center' }}>My Auction History</Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="tibia-nav">
+        <Link to="/" className="tibia-button" style={{ marginRight: '10px' }}>Back to Home</Link>
+        <button onClick={handleLogout} className="tibia-button">Logout</button>
+      </div>
     </div>
   );
 };

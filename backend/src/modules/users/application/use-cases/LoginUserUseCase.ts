@@ -1,6 +1,7 @@
 import { IUserRepository } from '../ports/outbound/IUserRepository';
 import { IHasherPort } from '../ports/outbound/IHasherPort';
 import { ITokenPort } from '../ports/outbound/ITokenPort';
+import { User } from '../../domain/User';
 
 export class LoginUserUseCase {
   constructor(
@@ -9,7 +10,7 @@ export class LoginUserUseCase {
     private tokenPort: ITokenPort
   ) {}
 
-  async execute(input: any): Promise<{ token: string }> {
+  async execute(input: any): Promise<{ user: User, token: string }> {
     const user = await this.userRepository.findByEmail(input.email);
     if (!user) {
       throw new Error('Invalid credentials');
@@ -22,6 +23,6 @@ export class LoginUserUseCase {
 
     const token = this.tokenPort.sign({ userId: user.id });
 
-    return { token };
+    return { user, token };
   }
 }
