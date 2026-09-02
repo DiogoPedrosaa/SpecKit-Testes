@@ -1,19 +1,19 @@
 # Research & Architectural Decisions
 
 ## 1. Arquitetura Geral e Fronteiras
-- **Decision**: Arquitetura em Camadas (Hexagonal/Clean Architecture simplificada). O Domínio (Entidades e Casos de Uso) não conhece a Infraestrutura (MongoDB, Fastify). Interfaces (Ports) definem os contratos.
-- **Rationale**: Atende ao requisito "Separar claramente regras de negócio de infraestrutura" e "Regras de negócio não devem depender de MongoDB ou HTTP".
-- **Alternatives considered**: MVC tradicional (rejeitado por acoplar domínio ao framework/banco).
+- **Decision**: Arquitetura Hexagonal (Ports & Adapters). O Domínio (Entidades) e a Aplicação (Casos de Uso) não conhecem a Infraestrutura (MongoDB, Fastify). Interfaces (Ports Inbound/Outbound) definem os contratos. Controladores e Repositórios atuam como Adapters.
+- **Rationale**: Atende à nova regra da constituição de independência total do domínio em relação a frameworks e bancos de dados. Dependências apontam apenas para dentro.
+- **Alternatives considered**: MVC tradicional (rejeitado por acoplar domínio ao framework/banco) ou Clean Architecture completa (simplificada para Hexagonal para o MVP).
 
 ## 2. Organização das Pastas e Módulos
-- **Decision**: Divisão por Módulos (Feature-based) dentro do backend. Estrutura: `src/modules/[module]/`. Dentro de cada módulo: `domain` (entities), `application` (use-cases, interfaces), `infrastructure` (repositories, controllers, routes).
-- **Rationale**: Mantém o código coeso. Funcionalidades de leilão ficam num módulo `auction`, usuários no módulo `user`.
-- **Alternatives considered**: Divisão por camada (`src/controllers`, `src/use-cases`), rejeitada por espalhar as features pelo projeto.
+- **Decision**: Divisão por Módulos (Feature-based) dentro do backend. Dentro de cada módulo: `domain` (entities), `application` (use-cases, ports), `adapters` (`inbound` para HTTP/CLI, `outbound` para Repositories/Gateways). Uma pasta `main` compõe as dependências (Composition Root).
+- **Rationale**: Mantém o código coeso e as fronteiras arquiteturais explícitas.
+- **Alternatives considered**: Divisão estrita por camadas genéricas (`src/controllers`, `src/use-cases`), rejeitada por espalhar features.
 
-## 3. Persistência e Banco de Dados
-- **Decision**: Repositórios (Repository Pattern) encapsulando o MongoDB.
-- **Rationale**: Isolamento. Os casos de uso chamam `IUserRepository`, e a implementação `MongoUserRepository` lida com o driver do Mongo. 
-- **Alternatives considered**: Active Record / Mongoose diretamente nos casos de uso (rejeitado por violar a independência de infra).
+## 3. Persistência e Banco de Dados (Outbound Adapters)
+- **Decision**: Adapters de persistência (MongoDB) implementando os Outbound Ports definidos na camada de Application (ex: `IAuctionRepository`).
+- **Rationale**: Isolamento total do DB. O driver do Mongo fica contido apenas nos Adapters.
+- **Alternatives considered**: Active Record / Mongoose diretamente nos casos de uso (rejeitado por violar a constituição).
 
 ## 4. Estratégia de Autenticação
 - **Decision**: JWT (JSON Web Tokens) injetados via Fastify Hooks/Middleware.

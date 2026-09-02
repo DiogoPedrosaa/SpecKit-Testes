@@ -1,5 +1,7 @@
 # Data Model & Domain Entities
 
+**Nota de Arquitetura**: As classes abaixo representam **Entidades de Domínio** puras da Arquitetura Hexagonal. Elas não possuem anotações de ORM, não herdam de classes de banco de dados e são responsáveis apenas pelas regras de negócio. O mapeamento para persistência (ex: esquemas do MongoDB) será feito exclusivamente pelos *Outbound Adapters*.
+
 ## 1. User
 **Regras**: SaldoLivre + SaldoRetido = SaldoTotal. Saldo livre não pode ser negativo.
 ```typescript

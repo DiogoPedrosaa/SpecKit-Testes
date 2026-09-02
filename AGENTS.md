@@ -30,13 +30,16 @@ Timely
 
 ## Architecture
 
-Regras de negócio não devem depender diretamente de:
+O backend deve seguir a **Arquitetura Hexagonal (Ports and Adapters)**.
+Regras de negócio (domínio e casos de uso) não devem depender diretamente de:
 
 - banco de dados;
 - HTTP;
 - frameworks;
 - APIs externas;
 - filesystem.
+
+Dependências devem apontar para dentro da aplicação. Adaptadores de entrada devem lidar com interfaces externas (como HTTP) e adaptadores de saída devem implementar portas para persistência e serviços externos.
 
 ## Testing Strategy
 

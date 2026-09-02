@@ -40,7 +40,10 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] **Hexagonal Architecture (Backend)**: Does the backend design enforce separation of Domain/UseCases from Frameworks/DB/HTTP? Are dependencies pointing inward? Do Adapters handle external interfaces (in) and persistence (out)?
+- [ ] **TDD & Testing**: Does the plan ensure testability? Are FIRST principles supported? Does the plan account for Unit, Integration, and E2E testing strategies?
+- [ ] **Code Quality**: Does the plan minimize complexity and avoid premature abstractions?
+- [ ] **AI Behavior**: Are only specified requirements being addressed (no invented features)?
 
 ## Project Structure
 
@@ -80,9 +83,10 @@ tests/
 # [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
 backend/
 ├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
+│   ├── domain/        # Core business rules, entities
+│   ├── application/   # Use cases, application services, ports
+│   ├── adapters/      # Inbound (HTTP, CLI) and Outbound (DB, external APIs)
+│   └── main/          # Composition root, dependency injection
 └── tests/
 
 frontend/

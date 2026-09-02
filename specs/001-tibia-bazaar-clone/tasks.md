@@ -13,42 +13,48 @@
 
 **Purpose**: Fundações e inicialização.
 
-- [x] T001 Initialize backend Node.js + TypeScript project in `backend/` with Fastify and Vitest
-- [x] T002 [P] Initialize frontend React + TypeScript + Vite project in `frontend/` with Playwright
+- [ ] T001 Initialize backend Node.js + TypeScript project in `backend/` with Fastify, Vitest and TypeScript configuration
+- [ ] T002 [P] Initialize frontend React + TypeScript + Vite project in `frontend/` with Playwright
 - [ ] T003 [P] Setup linting (ESLint, Prettier) in `backend/` and `frontend/`
-- [ ] T004 Setup MongoDB connection structure and environment variables in `backend/src/shared/`
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Core infrastructure.
+**Purpose**: Core infrastructure and Hexagonal Architecture validation.
 
-- [ ] T005 [P] Implement Logger service in `backend/src/shared/logger.ts`
-- [ ] T006 [P] Implement API Error handler middleware in `backend/src/shared/errorHandler.ts`
-- [ ] T007 [P] Implement Auth Middleware (JWT) stub in `backend/src/shared/authMiddleware.ts`
-- [ ] T008 [P] Setup Base Repository interface in `backend/src/shared/baseRepository.ts`
+- [ ] T004 Setup MongoDB connection structure and environment variables in `backend/src/main/database/mongoSetup.ts`
+- [ ] T005 [P] Implement API Error handler in `backend/src/shared/errorHandler.ts`
+- [ ] T006 [P] Create architecture validation test to ensure `domain` and `application` do not import `adapters` or `main` (dependency rule) in `backend/tests/architecture/hexagonal.test.ts`
 
 ---
 
-## Phase 3: User Story 1 - Autenticação e Gestão de Conta (Priority: P1)
+## Phase 3: User Story 1 - Autenticação e Gestão de Conta (Priority: P1) 🎯 MVP
 
 **Goal**: Permitir cadastro, login e gestão de saldo.
 
-### Tests for User Story 1
-- [ ] T009 [P] [US1] Create unit tests for User entity (balance management) in `backend/tests/unit/User.spec.ts`
-- [ ] T010 [P] [US1] Create unit tests for User Registration Use Case in `backend/tests/unit/RegisterUserUseCase.spec.ts`
-- [ ] T011 [P] [US1] Create unit tests for Add Balance Use Case in `backend/tests/unit/AddBalanceUseCase.spec.ts`
-- [ ] T012 [P] [US1] Create integration test for Auth API in `backend/tests/integration/auth.test.ts`
+**Independent Test**: Pode ser testado registrando um usuário, fazendo login e visualizando a interface da conta.
+
+### Tests for User Story 1 (TDD required) ⚠️
+
+> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+
+- [ ] T007 [P] [US1] Create unit tests for User entity (balance management) in `backend/tests/unit/domain/User.spec.ts`
+- [ ] T008 [P] [US1] Create unit tests for Auth Use Cases in `backend/tests/unit/application/AuthUseCases.spec.ts`
+- [ ] T009 [P] [US1] Create integration test for Auth API in `backend/tests/integration/auth.test.ts`
 
 ### Implementation for User Story 1
-- [ ] T013 [P] [US1] Create User Entity domain model in `backend/src/modules/users/domain/User.ts`
-- [ ] T014 [US1] Implement RegisterUserUseCase and LoginUserUseCase in `backend/src/modules/users/application/authUseCases.ts`
-- [ ] T015 [US1] Implement AddBalanceUseCase in `backend/src/modules/users/application/AddBalanceUseCase.ts`
-- [ ] T016 [P] [US1] Create UserRepository MongoDB implementation in `backend/src/modules/users/infrastructure/MongoUserRepository.ts`
-- [ ] T017 [US1] Create Auth and Account Fastify Controllers in `backend/src/modules/users/infrastructure/authController.ts`
-- [ ] T018 [P] [US1] Implement Frontend Auth Service (API client) in `frontend/src/services/auth.ts`
-- [ ] T019 [US1] Implement Frontend Login/Register pages and State in `frontend/src/pages/Auth/`
+
+- [ ] T010 [P] [US1] Create User Entity (Domain) in `backend/src/modules/users/domain/User.ts`
+- [ ] T011 [P] [US1] Define Outbound Ports (IUserRepository, IHasherPort, ITokenPort) in `backend/src/modules/users/application/ports/outbound/`
+- [ ] T012 [US1] Implement Auth Use Cases (Application) in `backend/src/modules/users/application/use-cases/`
+- [ ] T013 [P] [US1] Create MongoUserRepository (Outbound Adapter) in `backend/src/modules/users/adapters/outbound/MongoUserRepository.ts`
+- [ ] T014 [P] [US1] Create Bcrypt & JWT Outbound Adapters in `backend/src/modules/users/adapters/outbound/`
+- [ ] T015 [US1] Create AuthController HTTP (Inbound Adapter) in `backend/src/modules/users/adapters/inbound/authController.ts`
+- [ ] T016 [US1] Configure wiring in `backend/src/main/factories/authFactory.ts`
+- [ ] T017 [P] [US1] Implement Frontend Auth Service & UI in `frontend/src/`
+
+**Checkpoint**: User Registration, Login, and Balance Management fully functional and independently tested.
 
 ---
 
@@ -56,17 +62,24 @@
 
 **Goal**: Cadastrar personagens na conta do usuário e listar anúncios ativos na home.
 
-### Tests for User Story 2
-- [ ] T020 [P] [US2] Create unit tests for Create Character Use Case in `backend/tests/unit/CreateCharacterUseCase.spec.ts`
-- [ ] T021 [P] [US2] Create integration test for Characters API in `backend/tests/integration/characters.test.ts`
+**Independent Test**: Pode ser testado cadastrando personagens via painel do usuário e acessando a listagem pública.
+
+### Tests for User Story 2 (TDD required) ⚠️
+
+- [ ] T018 [P] [US2] Create unit tests for Character Use Cases in `backend/tests/unit/application/CharacterUseCases.spec.ts`
+- [ ] T019 [P] [US2] Create integration test for Characters API in `backend/tests/integration/characters.test.ts`
 
 ### Implementation for User Story 2
-- [ ] T022 [P] [US2] Create Character Entity domain model in `backend/src/modules/characters/domain/Character.ts`
-- [ ] T023 [US2] Implement CreateCharacterUseCase in `backend/src/modules/characters/application/CreateCharacterUseCase.ts`
-- [ ] T024 [P] [US2] Create CharacterRepository MongoDB implementation in `backend/src/modules/characters/infrastructure/MongoCharacterRepository.ts`
-- [ ] T025 [US2] Create Character Fastify Controller in `backend/src/modules/characters/infrastructure/characterController.ts`
-- [ ] T026 [P] [US2] Implement Frontend Character Service (API client) in `frontend/src/services/characters.ts`
-- [ ] T027 [US2] Implement Frontend My Characters page in `frontend/src/pages/MyCharacters/`
+
+- [ ] T020 [P] [US2] Create Character Entity (Domain) in `backend/src/modules/characters/domain/Character.ts`
+- [ ] T021 [P] [US2] Define Outbound Ports (ICharacterRepository) in `backend/src/modules/characters/application/ports/outbound/ICharacterRepository.ts`
+- [ ] T022 [US2] Implement Character Use Cases (Application) in `backend/src/modules/characters/application/use-cases/`
+- [ ] T023 [P] [US2] Create MongoCharacterRepository (Outbound Adapter) in `backend/src/modules/characters/adapters/outbound/MongoCharacterRepository.ts`
+- [ ] T024 [US2] Create CharacterController HTTP (Inbound Adapter) in `backend/src/modules/characters/adapters/inbound/characterController.ts`
+- [ ] T025 [US2] Configure wiring in `backend/src/main/factories/characterFactory.ts`
+- [ ] T026 [P] [US2] Implement Frontend Character UI in `frontend/src/`
+
+**Checkpoint**: Characters can be created and listed independently.
 
 ---
 
@@ -74,59 +87,93 @@
 
 **Goal**: Vendedor pode criar leilão e o sistema encerra automaticamente.
 
-### Tests for User Story 3
-- [ ] T028 [P] [US3] Create unit tests for Auction Entity (create and finish rules) in `backend/tests/unit/Auction.spec.ts`
-- [ ] T029 [P] [US3] Create unit tests for Create Auction Use Case in `backend/tests/unit/CreateAuctionUseCase.spec.ts`
-- [ ] T030 [P] [US3] Create unit tests for Finish Auction Use Case in `backend/tests/unit/FinishAuctionUseCase.spec.ts`
+**Independent Test**: Pode ser testado criando o anúncio, avançando o tempo do sistema e checando se o status mudou para finalizado.
+
+### Tests for User Story 3 (TDD required) ⚠️
+
+- [ ] T027 [P] [US3] Create unit tests for Auction Entity in `backend/tests/unit/domain/Auction.spec.ts`
+- [ ] T028 [P] [US3] Create unit tests for Create/Finish Auction Use Cases in `backend/tests/unit/application/AuctionUseCases.spec.ts`
+- [ ] T029 [P] [US3] Create integration test for Auctions API in `backend/tests/integration/auctions.test.ts`
 
 ### Implementation for User Story 3
-- [ ] T031 [P] [US3] Create Auction Entity domain model in `backend/src/modules/auctions/domain/Auction.ts`
-- [ ] T032 [US3] Implement CreateAuctionUseCase in `backend/src/modules/auctions/application/CreateAuctionUseCase.ts`
-- [ ] T033 [US3] Implement FinishAuctionUseCase in `backend/src/modules/auctions/application/FinishAuctionUseCase.ts`
-- [ ] T034 [P] [US3] Create AuctionRepository MongoDB implementation in `backend/src/modules/auctions/infrastructure/MongoAuctionRepository.ts`
-- [ ] T035 [US3] Create Auction Fastify Controller in `backend/src/modules/auctions/infrastructure/auctionController.ts`
-- [ ] T036 [US3] Implement Cron Job for processing finished auctions in `backend/src/modules/auctions/infrastructure/auctionCron.ts`
-- [ ] T037 [US3] Implement Frontend Create Auction Modal/Page in `frontend/src/pages/MyCharacters/CreateAuction.tsx`
+
+- [ ] T030 [P] [US3] Create Auction Entity (Domain) in `backend/src/modules/auctions/domain/Auction.ts`
+- [ ] T031 [P] [US3] Define Outbound Ports (IAuctionRepository) in `backend/src/modules/auctions/application/ports/outbound/IAuctionRepository.ts`
+- [ ] T032 [US3] Implement Auction Use Cases (Application) in `backend/src/modules/auctions/application/use-cases/`
+- [ ] T033 [P] [US3] Create MongoAuctionRepository (Outbound Adapter) in `backend/src/modules/auctions/adapters/outbound/MongoAuctionRepository.ts`
+- [ ] T034 [US3] Create AuctionController HTTP (Inbound Adapter) in `backend/src/modules/auctions/adapters/inbound/auctionController.ts`
+- [ ] T035 [US3] Create AuctionCron Background Job (Inbound Adapter) in `backend/src/modules/auctions/adapters/inbound/auctionCron.ts`
+- [ ] T036 [US3] Configure wiring in `backend/src/main/factories/auctionFactory.ts`
+- [ ] T037 [P] [US3] Implement Frontend Auction UI in `frontend/src/`
+
+**Checkpoint**: Auctions can be created and finish over time.
 
 ---
 
 ## Phase 6: User Story 4 - Sistema de Lances e Débito (Priority: P2)
 
-**Goal**: Comprador pode dar lances; saldos são retidos, devolvidos (overbid) e transferidos no encerramento (com taxas).
+**Goal**: Comprador pode dar lances; saldos são retidos e transferidos no encerramento.
 
-### Tests for User Story 4
-- [ ] T038 [P] [US4] Create unit tests for Bid Entity and Auction PlaceBid rule in `backend/tests/unit/BidRules.spec.ts`
-- [ ] T039 [P] [US4] Create unit tests for Place Bid Use Case in `backend/tests/unit/PlaceBidUseCase.spec.ts`
+**Independent Test**: Testado dando um lance em leilão, checando validação de saldo e histórico de lances.
+
+### Tests for User Story 4 (TDD required) ⚠️
+
+- [ ] T038 [P] [US4] Create unit tests for Bid rules in `backend/tests/unit/domain/BidRules.spec.ts`
+- [ ] T039 [P] [US4] Create unit tests for PlaceBid Use Case in `backend/tests/unit/application/PlaceBidUseCase.spec.ts`
 - [ ] T040 [P] [US4] Create integration test for Bidding API with concurrent requests in `backend/tests/integration/bidding.test.ts`
 
 ### Implementation for User Story 4
-- [ ] T041 [P] [US4] Create Bid Entity domain model in `backend/src/modules/auctions/domain/Bid.ts`
-- [ ] T042 [US4] Implement PlaceBidUseCase in `backend/src/modules/auctions/application/PlaceBidUseCase.ts`
-- [ ] T043 [US4] Update FinishAuctionUseCase to handle fees (50 TC fixed + 12% fee) and balance transfers in `backend/src/modules/auctions/application/FinishAuctionUseCase.ts`
-- [ ] T044 [P] [US4] Create BidRepository MongoDB implementation in `backend/src/modules/auctions/infrastructure/MongoBidRepository.ts`
-- [ ] T045 [US4] Create Bid Fastify Controller in `backend/src/modules/auctions/infrastructure/bidController.ts`
-- [ ] T046 [US4] Implement Frontend Bidding interface in `frontend/src/pages/AuctionDetails/`
+
+- [ ] T041 [P] [US4] Update Auction Entity to handle Bids (Domain) in `backend/src/modules/auctions/domain/Auction.ts`
+- [ ] T042 [US4] Implement PlaceBidUseCase (Application) in `backend/src/modules/auctions/application/use-cases/PlaceBidUseCase.ts`
+- [ ] T043 [US4] Update MongoAuctionRepository (Outbound Adapter) to store bids in `backend/src/modules/auctions/adapters/outbound/MongoAuctionRepository.ts`
+- [ ] T044 [US4] Add PlaceBid HTTP endpoint in AuctionController (Inbound Adapter) in `backend/src/modules/auctions/adapters/inbound/auctionController.ts`
+- [ ] T045 [P] [US4] Implement Frontend Bidding UI in `frontend/src/`
+
+**Checkpoint**: Users can bid on active auctions, with balances correctly updated.
 
 ---
 
 ## Phase 7: User Story 5 - Histórico e Visualização Detalhada (Priority: P3)
 
-**Goal**: Ver detalhes do leilão e histórico de participação.
+**Goal**: Detalhes completos de anúncio e histórico de participação do usuário.
 
-### Tests for User Story 5
-- [ ] T047 [P] [US5] Create E2E test for the full auction lifecycle (login, create, bid, finish, view history) in `frontend/tests/e2e/auctionLifecycle.spec.ts`
+**Independent Test**: Testado acessando painel de histórico após lances e vendas.
+
+### Tests for User Story 5 (TDD required) ⚠️
+
+- [ ] T046 [P] [US5] Create unit tests for History Use Cases in `backend/tests/unit/application/HistoryUseCases.spec.ts`
+- [ ] T047 [P] [US5] Create integration test for History API in `backend/tests/integration/history.test.ts`
 
 ### Implementation for User Story 5
-- [ ] T048 [P] [US5] Create ViewAuctionHistoryUseCase in `backend/src/modules/auctions/application/ViewAuctionHistoryUseCase.ts`
-- [ ] T049 [US5] Add History endpoints to controllers in `backend/src/modules/auctions/infrastructure/auctionController.ts`
-- [ ] T050 [US5] Implement Frontend User History Page in `frontend/src/pages/MyHistory/`
-- [ ] T051 [US5] Implement Frontend Home Page (List Active Auctions) mimicking Tibia.com visual style in `frontend/src/pages/Home/`
+
+- [ ] T048 [US5] Implement History Use Cases (Application) in `backend/src/modules/auctions/application/use-cases/`
+- [ ] T049 [US5] Update AuctionController (Inbound Adapter) for History endpoints in `backend/src/modules/auctions/adapters/inbound/auctionController.ts`
+- [ ] T050 [P] [US5] Implement Frontend History UI in `frontend/src/`
 
 ---
 
-## Phase 8: Polish & Cross-Cutting Concerns
+## Final Phase: Polish & Cross-Cutting Concerns
 
-**Purpose**: Melhorias que afetam múltiplas user stories.
+- [ ] T051 [P] E2E Playwright test covering the full Happy Path (Validation Guide) in `frontend/tests/e2e/happypath.spec.ts`
+- [ ] T052 Refactor duplicate code in adapters if necessary
 
-- [ ] T052 [P] Code cleanup and refactoring
-- [ ] T053 Run quickstart.md validation to ensure the MVP works end-to-end
+---
+
+## Dependencies & Execution Order
+
+### Phase Dependencies
+
+- **Setup (Phase 1)**: Can start immediately.
+- **Foundational (Phase 2)**: Depends on Setup. Blocks user stories.
+- **User Stories (Phase 3+)**: Depend on Foundational phase.
+  - US1 (Auth) and US2 (Characters) can proceed in parallel.
+  - US3 (Auctions) depends on US2 (Characters) and partially on US1 (Sellers).
+  - US4 (Bidding) depends on US1 (Auth/Balance) and US3 (Auctions).
+  - US5 (History) depends on US4.
+
+### Parallel Opportunities
+
+- Tests within a User Story can run in parallel.
+- Outbound Adapters (MongoDB, Bcrypt) can be implemented in parallel with Frontend Service layers.
+- Inbound Adapters (Fastify) must wait for Application Use Cases.

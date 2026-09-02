@@ -1,5 +1,6 @@
 # API Contracts
 
+**Nota de Arquitetura**: As rotas abaixo representam os contratos dos *Inbound Adapters* (Controladores HTTP). Eles são responsáveis por receber a requisição HTTP, validá-la e invocar os Casos de Uso (*Inbound Ports*), mapeando a resposta de domínio de volta para JSON.
 ## Autenticação
 - `POST /api/auth/register`
   - Body: `{ name, email, password }`

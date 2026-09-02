@@ -8,21 +8,15 @@
 
 ## Summary
 
-O sistema "Tibia Bazaar Clone" é um marketplace educacional de personagens. O plano técnico adota um frontend React+Vite e um backend Node+Fastify+MongoDB. A arquitetura foca na separação estrita de regras de negócio (Domínio) da infraestrutura, garantindo alta testabilidade com Vitest e Playwright, sem incorrer em over-engineering.
+O sistema "Tibia Bazaar Clone" é um marketplace educacional de personagens. O plano técnico adota um frontend React+Vite e um backend Node+Fastify+MongoDB. A arquitetura do backend seguirá **estritamente a Arquitetura Hexagonal (Ports & Adapters)**, conforme nova regra da constituição. Isso garante total independência do Domínio e Casos de Uso em relação a frameworks, banco de dados e APIs externas. A testabilidade é maximizada utilizando TDD com Vitest (Unit/Integration) e Playwright (E2E).
 
 ## Technical Context
-
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
 
 **Language/Version**: TypeScript 5+ (Node.js 20+)
 
 **Primary Dependencies**: React, Vite, Fastify, Zod
 
-**Storage**: MongoDB (via mongoose ou mongodb driver simples)
+**Storage**: MongoDB (via mongodb driver simples)
 
 **Testing**: Vitest (Unit e Integration), Sinon (Mocks), Playwright (E2E)
 
@@ -30,9 +24,15 @@ O sistema "Tibia Bazaar Clone" é um marketplace educacional de personagens. O p
 
 **Project Type**: Web Application (Frontend + Backend HTTP API)
 
-**Performance Goals**: MVP Educacional (sem metas estritas, focar em clareza)
+**Architecture Requirement**: Hexagonal Architecture (Ports and Adapters)
+- **Domain**: Entidades e regras de negócio puras (sem dependências externas).
+- **Application/Use Cases**: Fluxos da aplicação. Exigem interfaces (Ports) para comunicação externa.
+- **Inbound/Driving Ports**: Interfaces expostas aos Inbound Adapters (ex: Casos de uso).
+- **Outbound/Driven Ports**: Interfaces que os Casos de Uso precisam que a infraestrutura implemente (ex: Repositórios, Gateways).
+- **Inbound Adapters**: Controladores Fastify/HTTP que traduzem requests e chamam Inbound Ports.
+- **Outbound Adapters**: Implementações de Outbound Ports, ex: repositórios que conectam ao MongoDB.
 
-**Constraints**: Separar regras de negócio da infraestrutura; não acoplar Use Cases ao banco de dados ou framework web.
+**Constraints**: Dependências MUST apontar para dentro. Nenhum acoplamento HTTP, DB ou de FileSystem no Domínio ou Application.
 
 **Scale/Scope**: Pequena (MVP para estudo)
 
@@ -40,7 +40,10 @@ O sistema "Tibia Bazaar Clone" é um marketplace educacional de personagens. O p
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-Nenhuma violação encontrada. O projeto é novo e segue as premissas arquiteturais exigidas (testes independentes, camadas separadas, sem dependência rígida de framework nas regras de negócio).
+- [x] **Hexagonal Architecture (Backend)**: O plano estabelece uma divisão rigorosa em Domínio, Aplicação (Portas) e Adaptadores (In/Out), garantindo que regras de negócio dependam apenas de abstrações.
+- [x] **TDD & Testing**: Plano define Vitest para testes isolados e integrados usando dublês de teste para as portas de saída. TDD é mandatório.
+- [x] **Code Quality**: MVP evita over-engineering como filas complexas para o fim de leilão, preferindo Cron simplificado em um Adaptador de background.
+- [x] **AI Behavior**: Foco nos requisitos da spec; nenhuma nova feature inventada.
 
 ## Project Structure
 
@@ -57,42 +60,44 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
 
 ```text
 backend/
 ├── src/
 │   ├── modules/
 │   │   ├── users/
-│   │   │   ├── application/    # Casos de uso
-│   │   │   ├── domain/         # Entidades, erros
-│   │   │   └── infrastructure/ # Repositórios, controllers, rotas
+│   │   │   ├── domain/                  # Entidades (User, TibiaCoin), Value Objects, Domain Errors
+│   │   │   ├── application/             # Use Cases e Ports (In/Out)
+│   │   │   │   ├── use-cases/
+│   │   │   │   └── ports/               # IUserRepository, ICryptoPort
+│   │   │   └── adapters/
+│   │   │       ├── inbound/             # HTTP Controllers (Fastify)
+│   │   │       └── outbound/            # MongoUserRepository, BcryptAdapter
 │   │   └── auctions/
-│   │       ├── application/
-│   │       ├── domain/
-│   │       └── infrastructure/
-│   ├── shared/                 # Código comum (logs, config)
-│   └── app.ts                  # Entrypoint do Fastify
+│   │       ├── domain/                  # Character, Auction, Bid
+│   │       ├── application/             # Use Cases e Ports (In/Out)
+│   │       │   ├── use-cases/
+│   │       │   └── ports/               # IAuctionRepository, ICharacterRepository
+│   │       └── adapters/
+│   │           ├── inbound/             # HTTP Controllers, CronJobs
+│   │           └── outbound/            # MongoAuctionRepository
+│   ├── shared/                          # Ports genéricos (Logger), Erros Base
+│   └── main/                            # Composition Root, DI setup, Fastify App Setup
 └── tests/
-    ├── integration/
-    └── unit/
+    ├── integration/                     # Testes dos Adapters e Fluxos
+    ├── unit/                            # Testes de Domain e Application
+    └── e2e/                             # Testes ponta a ponta
 
 frontend/
 ├── src/
 │   ├── components/
 │   ├── pages/
-│   └── services/
+│   └── adapters/                        # API Clients
 └── tests/
-    └── e2e/
 ```
 
-**Structure Decision**: A estrutura foi dividida fisicamente em `frontend` e `backend` para manter responsabilidades segregadas. No backend, escolhemos uma organização modular por feature (`users`, `auctions`), e dentro de cada módulo seguimos a arquitetura em camadas (`domain`, `application`, `infrastructure`), isolando o Fastify e o MongoDB na camada `infrastructure`.
+**Structure Decision**: A estrutura implementa a Arquitetura Hexagonal. Os módulos (users, auctions) expõem seu núcleo (`domain`, `application`) independentemente da tecnologia. Toda tecnologia externa (Fastify, Mongo, Bcrypt) fica isolada na camada `adapters`. O pacote `main` é responsável por instanciar os adaptadores e injetá-los nos casos de uso.
 
 ## Complexity Tracking
 
-> **Nenhuma justificativa necessária, pois não houve violações da constituição.**
+> **Nenhuma justificativa necessária, pois o uso de Hexagonal Architecture foi imposto pela constituição.**

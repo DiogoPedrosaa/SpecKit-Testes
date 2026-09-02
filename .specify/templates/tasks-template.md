@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: Tests are MANDATORY. Every feature must follow TDD (RED -> GREEN -> REFACTOR). Tasks for tests must precede production code tasks.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -80,21 +80,18 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
+### Tests and Implementation for User Story 1 (TDD required) ⚠️
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **NOTE: Write tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
-
-### Implementation for User Story 1
-
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T010 [P] [US1] Unit test for [Domain Entity/UseCase] in tests/unit/test_[name].py
+- [ ] T011 [P] [US1] Create [Domain Entity] in src/domain/[entity].py (satisfies T010)
+- [ ] T012 [P] [US1] Create [UseCase] and output [Port] in src/application/[usecase].py (satisfies T010)
+- [ ] T013 [US1] Integration test for [Adapter] in tests/integration/test_[adapter].py
+- [ ] T014 [US1] Implement Inbound Adapter (e.g., HTTP Controller) in src/adapters/inbound/[file].py (satisfies T013)
+- [ ] T015 [US1] Implement Outbound Adapter (e.g., Repository) in src/adapters/outbound/[file].py (satisfies T013)
+- [ ] T016 [US1] E2E test for [User Journey] in tests/e2e/test_[journey].py
+- [ ] T017 [US1] Add wiring in src/main/setup.py to compose use case and adapters (satisfies T016)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
